@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+
+    id 'com.jfrog.bintray' version '1.8.4'
+}
+
+description = 'Xenon artifact with all adaptors included'
+
+ext {
+    xenonLibVersion = '3.0.0'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile group: 'nl.esciencecenter.xenon', name: 'xenon', version: xenonLibVersion
+    compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-cloud', version: xenonLibVersion
+    compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-hadoop', version: xenonLibVersion
+    compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-grid', version: xenonLibVersion
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    pkg {
+        repo = 'xenon-all'
+        name = 'xenon-all'
+        desc = description
+        userOrg = 'nlesc'
+        licenses = ['Apache-2.0']
+        websiteUrl = 'https://nlesc.github.io/xenon-all'
+        vcsUrl = 'https://github.com/NLeSC/Xenon.git'
+        issueTrackerUrl = 'https://github.com/NLeSC/Xenon/issues'
+    }
+    publications = ['MyPublication']
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId 'nl.esciencecenter.xenon'
+            artifactId 'xenon-all'
+            version xenonLibVersion
+        }
+    }
+}
