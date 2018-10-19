@@ -12,7 +12,15 @@ ext {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+sourceSets {
+    docGenerator
 }
 
 dependencies {
@@ -20,6 +28,10 @@ dependencies {
     compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-cloud', version: xenonLibVersion
     compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-hadoop', version: xenonLibVersion
     compile group: 'nl.esciencecenter.xenon.adaptors', name: 'xenon-adaptors-grid', version: xenonLibVersion
+
+    docGeneratorCompile group: 'nl.esciencecenter.xenon', name: 'xenon-docgenerator', version: xenonLibVersion
+    docGeneratorCompile sourceSets.main.output
+    docGeneratorRuntime configurations.runtime
 }
 
 bintray {
@@ -47,4 +59,20 @@ publishing {
             version xenonLibVersion
         }
     }
+}
+
+task adaptorDocumentation(type: JavaExec) {
+    description 'Generates html snippet with options of adaptors (used in the javadoc overview page)'
+    group 'documentation'
+    main = 'nl.esciencecenter.xenon.utils.AdaptorDocGenerator'
+    File output = file("docs/adaptors-${xenonLibVersion}.html")
+    args = [output]
+    classpath = sourceSets.docGenerator.runtimeClasspath
+    outputs.file output
+}
+
+task publishSite() {
+    description 'Publishes artifacts to site (aka /docs/ directory)'
+    group 'Publishing'
+    dependsOn 'adaptorDocumentation'
 }
