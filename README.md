@@ -15,4 +15,4 @@ dependencies {
 
 Each version has a page of all available adaptors.
 
-The adaptor pages can be found in the [docs/](docs/) directory or at https://nlesc.github.io/xenon-all
+The adaptor pages can be found in the [docs/](docs/) directory or at https://xenon-middleware.github.io/xenon-all
